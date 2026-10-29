@@ -4,7 +4,7 @@
 **Student:** Orynbek Akniyet  
 **Project:** DevOps Midterm Assignment
 
-## Description
+## Student API Description - Main Branch
 
 A Spring Boot REST API for managing student records using CRUD operations.
 
