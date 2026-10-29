@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: orynbek-akniyet-postgres
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: student
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student -d studentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - student-network
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: orynbek-akniyet-student-api:1.0
+    container_name: orynbek-akniyet-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/studentdb
+      DB_USERNAME: student
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - student-network
+
+volumes:
+  postgres_data:
+
+networks:
+  student-network:
+    driver: bridge
